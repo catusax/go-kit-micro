@@ -79,8 +79,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	zap.ReplaceGlobals(logger.Named({{.Service}}))
-    rpcLogger = kitzap.NewZapSugarLogger(logger, logLevel)
+	zap.ReplaceGlobals(logger.Named("{{.Service}}"))
+    rpcLogger := kitzap.NewZapSugarLogger(logger, zapcore.WarnLevel)
 
 
 	grpcListener, err := net.Listen("tcp", ":") //随机端口
@@ -91,7 +91,11 @@ func main() {
 		return
 	}
 	if host == "::" {
-		host = utils.GetOutboundIP().String()
+		ip, err := utils.GetOutboundIP()
+		if err != nil {
+			panic(err)
+		}
+		host = ip.String()
 	}
 	port, err := strconv.Atoi(sport)
 	if err != nil {
@@ -106,7 +110,7 @@ func main() {
 
 	go func() {
 		// Register handler
-		srv := NewRpcServer()
+		srv := NewRpcServer(logger)
 
 		pb.Register{{title .Service}}Server(srv, new(handler.{{title .Service}}))
 		registrar.Register()
@@ -132,7 +136,7 @@ func main() {
 	syslog.Println(err)
 }
 
-func NewRpcServer() *grpc.Server {
+func NewRpcServer(logger *zap.Logger) *grpc.Server {
 	return grpc.NewServer(
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
@@ -149,4 +153,5 @@ func NewRpcServer() *grpc.Server {
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	)
+}
 `

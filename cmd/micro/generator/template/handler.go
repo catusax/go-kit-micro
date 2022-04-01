@@ -5,6 +5,7 @@ var HandlerSRV = `package handler
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"time"
 
@@ -29,21 +30,21 @@ func (e *{{title .Service}}) ClientStream(stream pb.{{title .Service}}_ClientStr
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
-			log.Infof("Got %v pings total", count)
+			zap.L().Info("Got pings", zap.Int64("total", count))
 			return stream.SendMsg(&pb.ClientStreamResponse{Count: count})
 		}
 		if err != nil {
 			return err
 		}
-		log.Infof("Got ping %v", req.Stroke)
+		zap.L().Info(fmt.Sprintf("Got ping %v", req.Stroke))
 		count++
 	}
 }
 
-func (e *{{title .Service}}) ServerStream(ctx context.Context, req *pb.ServerStreamRequest, stream pb.{{title .Service}}_ServerStreamServer) error {
+func (e *{{title .Service}}) ServerStream(req *pb.ServerStreamRequest, stream pb.{{title .Service}}_ServerStreamServer) error {
 	zap.L().Info("Received {{title .Service}}.ServerStream request: ", zap.Any("request", req))
 	for i := 0; i < int(req.Count); i++ {
-		log.Infof("Sending %d", i)
+		zap.L().Info(fmt.Sprintf("Sending %d", i))
 		if err := stream.Send(&pb.ServerStreamResponse{
 			Count: int64(i),
 		}); err != nil {
@@ -63,7 +64,7 @@ func (e *{{title .Service}}) BidiStream(stream pb.{{title .Service}}_BidiStreamS
 		if err != nil {
 			return err
 		}
-		log.Infof("Got ping %v", req.Stroke)
+		zap.L().Info(fmt.Sprintf("Got ping %v", req.Stroke))
 		if err := stream.Send(&pb.BidiStreamResponse{Stroke: req.Stroke}); err != nil {
 			return err
 		}

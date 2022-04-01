@@ -48,12 +48,22 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
     return &ClientImpl{
 `)
 		for _, method := range srv.Methods {
-			g.P(FirstLower(method.GoName), fmt.Sprintf(`: sd.GetEndPoint(instancer, func(conn *grpc.ClientConn, ctx context.Context, request interface{}) (interface{}, error) {
+
+			if method.Desc.IsStreamingClient() {
+				g.P(FirstLower(method.GoName), fmt.Sprintf(`: sd.GetEndPoint(instancer, func(conn *grpc.ClientConn, ctx context.Context, request interface{}) (interface{}, error) {
+			client := New%sClient(conn)
+
+			return client.%s(ctx)
+		}, logger),`, srv.GoName, method.GoName))
+			} else {
+				g.P(FirstLower(method.GoName), fmt.Sprintf(`: sd.GetEndPoint(instancer, func(conn *grpc.ClientConn, ctx context.Context, request interface{}) (interface{}, error) {
 			client := New%sClient(conn)
 			req := request.(*%s)
 
 			return client.%s(ctx, req)
 		}, logger),`, srv.GoName, method.Input.GoIdent.GoName, method.GoName))
+			}
+
 		}
 
 		g.P("}}")
@@ -73,7 +83,38 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 
 			//g.P(method.Comments.Trailing.String())
 
-			g.P(fmt.Sprintf(`func (n *ClientImpl) %s(ctx context.Context, req *%s) (*%s, error) {
+			//bidi
+			if method.Desc.IsStreamingClient() && method.Desc.IsStreamingClient() {
+				g.P(fmt.Sprintf(`func (n *ClientImpl) %s(ctx context.Context) (%s_BidiStreamClient, error) {
+	rsp, err := n.%s(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	res := rsp.(%s_BidiStreamClient)
+	return res, err
+}`, method.GoName, srv.GoName, FirstLower(method.GoName), srv.GoName))
+			} else if method.Desc.IsStreamingServer() {
+				g.P(fmt.Sprintf(`func (n *ClientImpl) %s(ctx context.Context, req *%s) (%s_ServerStreamClient, error) {
+	rsp, err := n.%s(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	res := rsp.(%s_ServerStreamClient)
+	return res, err
+}`, method.GoName, method.Input.GoIdent.GoName, srv.GoName, FirstLower(method.GoName), srv.GoName))
+
+			} else if method.Desc.IsStreamingClient() {
+				g.P(fmt.Sprintf(`func (n *ClientImpl) %s(ctx context.Context) (%s_ClientStreamClient, error) {
+	rsp, err := n.%s(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	res := rsp.(%s_ClientStreamClient)
+	return res, err
+}`, method.GoName, srv.GoName, FirstLower(method.GoName), srv.GoName))
+
+			} else {
+				g.P(fmt.Sprintf(`func (n *ClientImpl) %s(ctx context.Context, req *%s) (*%s, error) {
 	rsp, err := n.%s(ctx, req)
 	if err != nil {
 		return nil, err
@@ -81,8 +122,9 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	res := rsp.(*%s)
 	return res, err
 }`, method.GoName, method.Input.GoIdent.GoName, method.Output.GoIdent.GoName, FirstLower(method.GoName), method.Output.GoIdent.GoName))
-		}
 
+			}
+		}
 	}
 
 	return g
