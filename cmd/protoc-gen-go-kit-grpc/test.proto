@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package test;
+
+option go_package = "./proto;test";
+
+service Wallet {
+  // insert 234124321
+  // adasda
+  // frtgrt
+  // asdad
+  rpc Insert(InsertRequest) returns (InsertResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse){}
+}
+
+message InsertRequest {
+  item item = 1;
+}
+
+message DeleteRequest{
+  string id = 1;
+}
+
+message InsertResponse {
+  int32 code = 1;
+  string msg = 2;
+}
+
+message DeleteResponse{
+  int32 code = 1;
+  string msg = 2;
+}
+
+
+message item {
+  optional string user_id = 1;
+  string id = 2;
+}
+
