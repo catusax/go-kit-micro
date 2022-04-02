@@ -21,7 +21,7 @@ type {{title .Service}} struct{
 func (e *{{title .Service}}) Call(ctx context.Context, req *pb.CallRequest)(*pb.CallResponse,error) {
 	zap.L().Info("Received {{title .Service}}.Call request: ", zap.Any("request", req))
 	return &pb.CallResponse{
-        Msg : "Hello " + req.Name
+        Msg : "Hello " + req.Name,
     }, nil
 }
 

@@ -44,6 +44,8 @@ func main() {
 var MainSRV = `package main
 
 import (
+	"context"
+	"time"
 	"{{.Vendor}}{{.Service}}/handler"
 	pb "{{.Vendor}}{{.Service}}/proto"
 	"fmt"

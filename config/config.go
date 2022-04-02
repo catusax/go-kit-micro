@@ -19,9 +19,8 @@ func init() {
 	ReadConfig()
 }
 
-// ReadConfig 读取配置文件
+// ReadConfig reads config from env
 func ReadConfig() {
-	log.Println("reading config")
 	C = Config{
 		LogLevel: GetEnvOrDefault("LOG_LEVEL", "warn"),
 		Etcd:     GetEnvSliceOrDefault("ETCD", "127.0.0.1:2379"), //TODO: 修复mdns后删除
@@ -53,6 +52,9 @@ func GetEnvOrDefaultInt(key string, defaultValue int) int {
 func GetEnvSlice(key string) []string {
 	if value, has := os.LookupEnv(key); has {
 		values := strings.Split(value, ",")
+		if len(values) == 1 && values[0] == "" {
+			return nil
+		}
 		return values
 	} else {
 		return []string{}
@@ -62,6 +64,9 @@ func GetEnvSlice(key string) []string {
 func GetEnvSliceOrDefault(key string, defaultValue string) []string {
 	if value, has := os.LookupEnv(key); has {
 		values := strings.Split(value, ",")
+		if len(values) == 1 && values[0] == "" {
+			return nil
+		}
 		return values
 	} else {
 		return []string{defaultValue}
