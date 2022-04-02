@@ -131,9 +131,22 @@ func main() {
 		quitChan <- fmt.Errorf("%s", <-c)
 	}()
 	err = <-quitChan
-	syslog.Println("gracefully shutting down...")
-	registrar.Deregister()
 	syslog.Println(err)
+	syslog.Println("gracefully shutting down...")
+	var doneChan = make(chan bool, 1)
+	go func() {
+		registrar.Deregister()
+		doneChan <- true
+	}()
+
+	select {
+	case <-doneChan:
+		fmt.Println("Deregister successfully!")
+		return
+	case <-time.After(time.Second * 5):
+		fmt.Println("Deregister failed: timeout!")
+		return
+	}
 }
 
 func NewRpcServer(logger *zap.Logger) *grpc.Server {
