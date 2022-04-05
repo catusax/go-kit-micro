@@ -11,6 +11,7 @@ import (
 	"github.com/go-kit/kit/sd/consul"
 	"github.com/go-kit/kit/sd/etcdv3"
 	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	consulApi "github.com/hashicorp/consul/api"
 	syslog "log"
 	"time"
@@ -25,6 +26,7 @@ func NewRegistrar(ctx context.Context, host string, port int, service string, lo
 
 	if len(config.C.Etcd) > 0 {
 		// etcd
+		_ = level.Info(logger).Log("using register", "ETCD", "addr", config.C.Etcd)
 		etcdClient, err := etcdv3.NewClient(ctx, config.C.Etcd, etcdv3.ClientOptions{
 			DialTimeout:   ttl,
 			DialKeepAlive: ttl,
@@ -40,6 +42,7 @@ func NewRegistrar(ctx context.Context, host string, port int, service string, lo
 		return registrar, nil
 	} else if config.C.Consul != "" {
 		// consul
+		_ = level.Info(logger).Log("using register", "Consul", "addr", config.C.Consul)
 		consulConfig := consulApi.DefaultConfig()
 		consulConfig.Address = config.C.Consul
 		c, err := consulApi.NewClient(consulConfig)
@@ -62,6 +65,7 @@ func NewRegistrar(ctx context.Context, host string, port int, service string, lo
 		return registrar, nil
 	} else {
 		// mDNS
+		_ = level.Info(logger).Log("using register", "mDNS")
 		service := mdns.Service{
 			Instance: instance, // unique
 			Service:  service,

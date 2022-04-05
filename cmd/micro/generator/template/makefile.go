@@ -11,10 +11,11 @@ init:
 	@go get -u google.golang.org/protobuf/proto
 	@go install github.com/golang/protobuf/protoc-gen-go@latest
 	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	@go install github.com/catusax/go-kit-micro/cmd/protoc-gen-go-kit-grpc@latest
 
 .PHONY: proto
 proto:
-	@protoc --proto_path=. -I${GOPATH}/src --go-grpc_out=. --go_out=:. proto/$(NAME).proto
+	@protoc --proto_path=. -I${GOPATH}/src --go-grpc_out=. --go_out=:. --go-kit-grpc_out=. proto/$(NAME).proto
 
 .PHONY: update
 update:

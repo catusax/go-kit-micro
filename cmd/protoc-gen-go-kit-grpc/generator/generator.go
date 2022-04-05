@@ -23,7 +23,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 
 	g.P(`import(
 	"context"
-	"github.com/coolrc136/go-kit-micro/sd"
+	"github.com/catusax/go-kit-micro/sd"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/log"
 	"google.golang.org/grpc"

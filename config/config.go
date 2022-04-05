@@ -23,7 +23,7 @@ func init() {
 func ReadConfig() {
 	C = Config{
 		LogLevel: GetEnvOrDefault("LOG_LEVEL", "warn"),
-		Etcd:     GetEnvSliceOrDefault("ETCD", "127.0.0.1:2379"), //TODO: 修复mdns后删除
+		Etcd:     GetEnvSlice("ETCD"),
 		Consul:   GetEnvOrDefault("CONSUL", ""),
 	}
 }
