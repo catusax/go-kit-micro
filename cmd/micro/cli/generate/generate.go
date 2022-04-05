@@ -6,10 +6,9 @@ import (
 	"os"
 	"strings"
 
-	mcli "github.com/coolrc136/go-kit-micro/cmd/micro/cli"
-	"github.com/coolrc136/go-kit-micro/cmd/micro/generator"
-	tmpl "github.com/coolrc136/go-kit-micro/cmd/micro/generator/template"
-	"github.com/urfave/cli/v2"
+	mcli "github.com/catusax/go-kit-micro/cmd/micro/cli"
+	"github.com/catusax/go-kit-micro/cmd/micro/generator"
+	tmpl "github.com/catusax/go-kit-micro/cmd/micro/generator/template"
 )
 
 func init() {

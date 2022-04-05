@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/coolrc136/go-kit-micro/cmd/protoc-gen-go-kit-grpc/generator"
+	"github.com/catusax/go-kit-micro/cmd/protoc-gen-go-kit-grpc/generator"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"
 )

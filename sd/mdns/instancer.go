@@ -3,7 +3,7 @@ package mdns
 import (
 	"context"
 	"fmt"
-	"github.com/coolrc136/go-kit-micro/sd/internal/instance"
+	"github.com/catusax/go-kit-micro/sd/internal/instance"
 	"net"
 	"sync"
 	"time"

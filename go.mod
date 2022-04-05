@@ -3,7 +3,7 @@ module github.com/catusax/go-kit-micro
 go 1.16
 
 require (
-	github.com/catusax/go-kit-micro v0.0.0-20220402040540-4dce1564d56f
+	github.com/catusax/go-kit-micro latest
 	github.com/go-kit/kit v0.12.0
 	github.com/go-kit/log v0.2.0
 	github.com/hashicorp/consul/api v1.10.1

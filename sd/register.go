@@ -5,8 +5,8 @@ package sd
 import (
 	"context"
 	"fmt"
-	"github.com/coolrc136/go-kit-micro/config"
-	"github.com/coolrc136/go-kit-micro/sd/mdns"
+	"github.com/catusax/go-kit-micro/config"
+	"github.com/catusax/go-kit-micro/sd/mdns"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/consul"
 	"github.com/go-kit/kit/sd/etcdv3"

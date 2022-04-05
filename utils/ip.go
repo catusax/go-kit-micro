@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/coolrc136/go-kit-micro/config"
+	"github.com/catusax/go-kit-micro/config"
 	"net"
 )
 

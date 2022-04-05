@@ -21,6 +21,6 @@ tidy:
 
 .PHONY: build
 build:
-	@go get -u github.com/coolrc136/go-kit-micro/cmd/protoc-gen-go-kit-grpc
+	@go get -u github.com/catusax/go-kit-micro/cmd/protoc-gen-go-kit-grpc
 	@go install .
 

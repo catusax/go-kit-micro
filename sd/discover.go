@@ -2,7 +2,7 @@ package sd
 
 import (
 	"context"
-	"github.com/coolrc136/go-kit-micro/config"
+	"github.com/catusax/go-kit-micro/config"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/consul"
