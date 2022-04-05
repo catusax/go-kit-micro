@@ -3,6 +3,7 @@ package generate
 import (
 	"bufio"
 	"fmt"
+	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
 
