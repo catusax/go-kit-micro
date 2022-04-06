@@ -15,8 +15,8 @@ type ClientImpl struct {
 	delete endpoint.Endpoint
 }
 
-func NewWalletClientImpl(name string, logger log.Logger) *ClientImpl {
-	instancer, err := sd.NewInstancer(name, logger)
+func NewWalletClientImpl(logger log.Logger) *ClientImpl {
+	instancer, err := sd.NewInstancer("wallet.service", logger)
 	if err != nil {
 		panic(err)
 	}

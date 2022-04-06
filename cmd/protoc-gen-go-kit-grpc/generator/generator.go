@@ -39,8 +39,8 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 		g.P("}")
 
 		// create NewClient func
-		g.P("func New", srv.GoName, "ClientImpl(name string,logger log.Logger) *ClientImpl {")
-		g.P("  instancer, err := sd.NewInstancer(name, logger)")
+		g.P("func New", srv.GoName, "ClientImpl(logger log.Logger) *ClientImpl {")
+		g.P("  instancer, err := sd.NewInstancer(\"" + strings.ToLower(srv.GoName) + ".service\", logger)")
 		g.P(`if err != nil {
 		panic(err)
 	}

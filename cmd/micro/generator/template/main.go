@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	service = "{{lower .Service}}"
+	service = "{{lower .Service}}.service"
 	version = "latest"
 )
 
@@ -71,7 +71,7 @@ import (
 )
 
 var (
-	service = "{{lower .Service}}"
+	service = "{{lower .Service}}.service"
     quitChan = make(chan error, 1)
 )
 
