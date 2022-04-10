@@ -29,7 +29,7 @@ if you don't set both `$ETCD` and `$CONSUL`,by default,your micro service will u
 
 go-kit endpoint generator
 
-demo: [](cmd/protoc-gen-go-kit-grpc/proto/test_client.pb.go)
+demo: [test_client.pb.go](cmd/protoc-gen-go-kit-grpc/proto/test_client.pb.go)
 
 ### usage
 
@@ -43,6 +43,22 @@ go install github.com/catusax/go-kit-micro/cmd/protoc-gen-go-kit-grpc@latest
 protoc --proto_path=. --go-grpc_out=. --go_out=:. --go-kit-grpc_out=. proto/<file>.proto
 
 ```
+
+to generate testing code ,use:
+
+```shell
+protoc --proto_path=. --go-grpc_out=. --go_out=:. --go-kit-grpc_out=. --go-kit-grpc_opt=test=true proto/<file>.proto
+```
+
+## thanks
+
+<https://github.com/rotemtam/protoc-gen-go-ascii>
+
+<https://github.com/wencan/kit-demo>
+
+<https://github.com/go-kit/kit>
+
+<https://github.com/asim/go-micro>
 
 ## License
 
@@ -60,9 +76,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## thanks
-
-<https://github.com/wencan/kit-demo>
-
-<https://github.com/go-kit/kit>

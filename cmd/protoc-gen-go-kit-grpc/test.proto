@@ -18,7 +18,18 @@ message InsertRequest {
 }
 
 message DeleteRequest{
-  string id = 1;
+  repeated string id = 1;
+  enum Corpus {
+    UNIVERSAL = 0;
+    WEB = 1;
+    IMAGES = 2;
+    LOCAL = 3;
+    NEWS = 4;
+    PRODUCTS = 5;
+    VIDEO = 6;
+  }
+  Corpus corpus = 4;
+
 }
 
 message InsertResponse {
@@ -35,5 +46,15 @@ message DeleteResponse{
 message item {
   optional string user_id = 1;
   string id = 2;
+  optional TestEnum val = 3;
+  TestEnum val2 = 4;
 }
-
+enum TestEnum {
+  UNIVERSAL = 0;
+  WEB = 1;
+  IMAGES = 2;
+  LOCAL = 3;
+  NEWS = 4;
+  PRODUCTS = 5;
+  VIDEO = 6;
+}

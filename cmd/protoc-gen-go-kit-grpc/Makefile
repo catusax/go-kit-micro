@@ -13,7 +13,7 @@ init:
 
 .PHONY: proto
 proto:
-	@protoc --proto_path=. -I${GOPATH}/src --go_out=. --go-grpc_out=. --go-kit-grpc_out=.  test.proto
+	@protoc --proto_path=. -I${GOPATH}/src --go_out=. --go-grpc_out=. --go-kit-grpc_out=. --go-kit-grpc_opt=test=true test.proto
 
 .PHONY: tidy
 tidy:
