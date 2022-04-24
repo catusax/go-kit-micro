@@ -1,45 +1,5 @@
 package template
 
-// MainCLT is the main template used for new client projects.
-var MainCLT = `package main
-
-import (
-	"context"
-	"time"
-
-	pb "{{.Vendor}}{{lower .Service}}/proto"
-
-	"go-micro.dev/v4"
-	log "go-micro.dev/v4/logger"
-)
-
-var (
-	service = "{{lower .Service}}.service"
-	version = "latest"
-)
-
-func main() {
-	// Create service
-	srv := micro.NewService()
-	srv.Init()
-
-	// Create client
-	c := pb.NewHelloworldService(service, srv.Client())
-
-	for {
-		// Call service
-		rsp, err := c.Call(context.Background(), &pb.CallRequest{Name: "John"})
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		log.Info(rsp)
-
-		time.Sleep(1 * time.Second)
-	}
-}
-`
-
 // MainSRV is the main template used for new service projects.
 var MainSRV = `package main
 
@@ -85,8 +45,7 @@ func main() {
     rpcLogger := kitzap.NewZapSugarLogger(logger, zapcore.WarnLevel)
 
 
-	grpcListener, err := net.Listen("tcp", ":") //随机端口
-	// 服务地址
+	grpcListener, err := net.Listen("tcp", ":")
 	host, sport, err := net.SplitHostPort(grpcListener.Addr().String())
 	if err != nil {
 		syslog.Println(err)

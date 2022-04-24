@@ -35,5 +35,5 @@ test:
 
 .PHONY: docker
 docker:
-	@docker build -t $(BIN):latest .
+	@docker build -t $(NAME):latest .
 `

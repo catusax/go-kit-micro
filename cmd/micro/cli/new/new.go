@@ -101,10 +101,10 @@ func createProject(ctx *cli.Context, pt string) error {
 	}
 
 	switch pt {
-	case "client":
-		files = append(files, []generator.File{
-			{"main.go", tmpl.MainCLT},
-		}...)
+	//case "client":
+	//	files = append(files, []generator.File{
+	//		{"main.go", tmpl.MainCLT},
+	//	}...)
 	case "service":
 		files = append(files, []generator.File{
 			{"handler/" + name + ".go", tmpl.HandlerSRV},
