@@ -8,11 +8,13 @@ import (
 )
 
 var test *bool
+var handler *bool
 
 func main() {
 
 	var flags flag.FlagSet
 	test = flags.Bool("test", false, "generate testing code")
+	handler = flags.Bool("handler", false, "generate handler code")
 
 	protogen.Options{
 		ParamFunc: flags.Set,
@@ -22,10 +24,14 @@ func main() {
 			if !f.Generate {
 				continue
 			}
-			generator.GenerateFile(gen, f)
+			generator.GenerateClientFile(gen, f)
 
 			if *test {
 				generator.GenerateTestFile(gen, f)
+			}
+
+			if *handler {
+				generator.GenerateHandlerFile(gen, f)
 			}
 		}
 		return nil

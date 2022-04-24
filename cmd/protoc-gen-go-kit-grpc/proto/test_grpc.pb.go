@@ -28,6 +28,9 @@ type WalletClient interface {
 	// asdad
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	ClientStream(ctx context.Context, opts ...grpc.CallOption) (Wallet_ClientStreamClient, error)
+	ServerStream(ctx context.Context, in *ServerStreamRequest, opts ...grpc.CallOption) (Wallet_ServerStreamClient, error)
+	BidiStream(ctx context.Context, opts ...grpc.CallOption) (Wallet_BidiStreamClient, error)
 }
 
 type walletClient struct {
@@ -56,6 +59,103 @@ func (c *walletClient) Delete(ctx context.Context, in *DeleteRequest, opts ...gr
 	return out, nil
 }
 
+func (c *walletClient) ClientStream(ctx context.Context, opts ...grpc.CallOption) (Wallet_ClientStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Wallet_ServiceDesc.Streams[0], "/test.Wallet/ClientStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &walletClientStreamClient{stream}
+	return x, nil
+}
+
+type Wallet_ClientStreamClient interface {
+	Send(*ClientStreamRequest) error
+	CloseAndRecv() (*ClientStreamResponse, error)
+	grpc.ClientStream
+}
+
+type walletClientStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *walletClientStreamClient) Send(m *ClientStreamRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *walletClientStreamClient) CloseAndRecv() (*ClientStreamResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(ClientStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *walletClient) ServerStream(ctx context.Context, in *ServerStreamRequest, opts ...grpc.CallOption) (Wallet_ServerStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Wallet_ServiceDesc.Streams[1], "/test.Wallet/ServerStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &walletServerStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Wallet_ServerStreamClient interface {
+	Recv() (*ServerStreamResponse, error)
+	grpc.ClientStream
+}
+
+type walletServerStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *walletServerStreamClient) Recv() (*ServerStreamResponse, error) {
+	m := new(ServerStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *walletClient) BidiStream(ctx context.Context, opts ...grpc.CallOption) (Wallet_BidiStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Wallet_ServiceDesc.Streams[2], "/test.Wallet/BidiStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &walletBidiStreamClient{stream}
+	return x, nil
+}
+
+type Wallet_BidiStreamClient interface {
+	Send(*BidiStreamRequest) error
+	Recv() (*BidiStreamResponse, error)
+	grpc.ClientStream
+}
+
+type walletBidiStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *walletBidiStreamClient) Send(m *BidiStreamRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *walletBidiStreamClient) Recv() (*BidiStreamResponse, error) {
+	m := new(BidiStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // WalletServer is the server API for Wallet service.
 // All implementations must embed UnimplementedWalletServer
 // for forward compatibility
@@ -66,6 +166,9 @@ type WalletServer interface {
 	// asdad
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
 	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	ClientStream(Wallet_ClientStreamServer) error
+	ServerStream(*ServerStreamRequest, Wallet_ServerStreamServer) error
+	BidiStream(Wallet_BidiStreamServer) error
 	mustEmbedUnimplementedWalletServer()
 }
 
@@ -78,6 +181,15 @@ func (UnimplementedWalletServer) Insert(context.Context, *InsertRequest) (*Inser
 }
 func (UnimplementedWalletServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedWalletServer) ClientStream(Wallet_ClientStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientStream not implemented")
+}
+func (UnimplementedWalletServer) ServerStream(*ServerStreamRequest, Wallet_ServerStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ServerStream not implemented")
+}
+func (UnimplementedWalletServer) BidiStream(Wallet_BidiStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method BidiStream not implemented")
 }
 func (UnimplementedWalletServer) mustEmbedUnimplementedWalletServer() {}
 
@@ -128,6 +240,79 @@ func _Wallet_Delete_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Wallet_ClientStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(WalletServer).ClientStream(&walletClientStreamServer{stream})
+}
+
+type Wallet_ClientStreamServer interface {
+	SendAndClose(*ClientStreamResponse) error
+	Recv() (*ClientStreamRequest, error)
+	grpc.ServerStream
+}
+
+type walletClientStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *walletClientStreamServer) SendAndClose(m *ClientStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *walletClientStreamServer) Recv() (*ClientStreamRequest, error) {
+	m := new(ClientStreamRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Wallet_ServerStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ServerStreamRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(WalletServer).ServerStream(m, &walletServerStreamServer{stream})
+}
+
+type Wallet_ServerStreamServer interface {
+	Send(*ServerStreamResponse) error
+	grpc.ServerStream
+}
+
+type walletServerStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *walletServerStreamServer) Send(m *ServerStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Wallet_BidiStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(WalletServer).BidiStream(&walletBidiStreamServer{stream})
+}
+
+type Wallet_BidiStreamServer interface {
+	Send(*BidiStreamResponse) error
+	Recv() (*BidiStreamRequest, error)
+	grpc.ServerStream
+}
+
+type walletBidiStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *walletBidiStreamServer) Send(m *BidiStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *walletBidiStreamServer) Recv() (*BidiStreamRequest, error) {
+	m := new(BidiStreamRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Wallet_ServiceDesc is the grpc.ServiceDesc for Wallet service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -144,6 +329,23 @@ var Wallet_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Wallet_Delete_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ClientStream",
+			Handler:       _Wallet_ClientStream_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "ServerStream",
+			Handler:       _Wallet_ServerStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "BidiStream",
+			Handler:       _Wallet_BidiStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "test.proto",
 }

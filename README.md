@@ -44,10 +44,16 @@ protoc --proto_path=. --go-grpc_out=. --go_out=:. --go-kit-grpc_out=. proto/<fil
 
 ```
 
-to generate testing code ,use:
+to generate testing code, use:
 
 ```shell
 protoc --proto_path=. --go-grpc_out=. --go_out=:. --go-kit-grpc_out=. --go-kit-grpc_opt=test=true proto/<file>.proto
+```
+
+to generate handle example, use:
+
+```shell
+protoc --proto_path=. --go-grpc_out=. --go_out=:. --go-kit-grpc_out=. --go-kit-grpc_opt=handler=true proto/<file>.proto
 ```
 
 ## thanks

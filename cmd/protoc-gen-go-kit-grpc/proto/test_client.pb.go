@@ -11,8 +11,11 @@ import (
 )
 
 type ClientImpl struct {
-	insert endpoint.Endpoint
-	delete endpoint.Endpoint
+	insert       endpoint.Endpoint
+	delete       endpoint.Endpoint
+	clientStream endpoint.Endpoint
+	serverStream endpoint.Endpoint
+	bidiStream   endpoint.Endpoint
 }
 
 func NewWalletClientImpl(logger log.Logger) *ClientImpl {
@@ -34,6 +37,22 @@ func NewWalletClientImpl(logger log.Logger) *ClientImpl {
 			req := request.(*DeleteRequest)
 
 			return client.Delete(ctx, req)
+		}, logger),
+		clientStream: sd.GetEndPoint(instancer, func(conn *grpc.ClientConn, ctx context.Context, request interface{}) (interface{}, error) {
+			client := NewWalletClient(conn)
+
+			return client.ClientStream(ctx)
+		}, logger),
+		serverStream: sd.GetEndPoint(instancer, func(conn *grpc.ClientConn, ctx context.Context, request interface{}) (interface{}, error) {
+			client := NewWalletClient(conn)
+			req := request.(*ServerStreamRequest)
+
+			return client.ServerStream(ctx, req)
+		}, logger),
+		bidiStream: sd.GetEndPoint(instancer, func(conn *grpc.ClientConn, ctx context.Context, request interface{}) (interface{}, error) {
+			client := NewWalletClient(conn)
+
+			return client.BidiStream(ctx)
 		}, logger),
 	}
 }
@@ -59,5 +78,35 @@ func (n *ClientImpl) Delete(ctx context.Context, req *DeleteRequest) (*DeleteRes
 		return nil, err
 	}
 	res := rsp.(*DeleteResponse)
+	return res, err
+}
+
+// ClientStream
+func (n *ClientImpl) ClientStream(ctx context.Context) (Wallet_BidiStreamClient, error) {
+	rsp, err := n.clientStream(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	res := rsp.(Wallet_BidiStreamClient)
+	return res, err
+}
+
+// ServerStream
+func (n *ClientImpl) ServerStream(ctx context.Context, req *ServerStreamRequest) (Wallet_ServerStreamClient, error) {
+	rsp, err := n.serverStream(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	res := rsp.(Wallet_ServerStreamClient)
+	return res, err
+}
+
+// BidiStream
+func (n *ClientImpl) BidiStream(ctx context.Context) (Wallet_BidiStreamClient, error) {
+	rsp, err := n.bidiStream(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	res := rsp.(Wallet_BidiStreamClient)
 	return res, err
 }

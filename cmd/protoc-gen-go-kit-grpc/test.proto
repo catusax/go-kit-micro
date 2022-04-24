@@ -11,6 +11,9 @@ service Wallet {
   // asdad
   rpc Insert(InsertRequest) returns (InsertResponse) {}
   rpc Delete(DeleteRequest) returns (DeleteResponse){}
+  rpc ClientStream(stream ClientStreamRequest) returns (ClientStreamResponse) {}
+  rpc ServerStream(ServerStreamRequest) returns (stream ServerStreamResponse) {}
+  rpc BidiStream(stream BidiStreamRequest) returns (stream BidiStreamResponse) {}
 }
 
 message InsertRequest {
@@ -57,4 +60,30 @@ enum TestEnum {
   NEWS = 4;
   PRODUCTS = 5;
   VIDEO = 6;
+}
+
+
+
+message ClientStreamRequest {
+  int64 stroke = 1;
+}
+
+message ClientStreamResponse {
+  int64 count = 1;
+}
+
+message ServerStreamRequest {
+  int64 count = 1;
+}
+
+message ServerStreamResponse {
+  int64 count = 1;
+}
+
+message BidiStreamRequest {
+  int64 stroke = 1;
+}
+
+message BidiStreamResponse {
+  int64 stroke = 1;
 }

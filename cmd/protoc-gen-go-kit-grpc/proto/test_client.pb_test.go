@@ -50,3 +50,54 @@ func TestWallet_Delete(t *testing.T) {
 	}
 	log.Printf("rsp: %v", rsp)
 }
+func TestWallet_ClientStream(t *testing.T) {
+
+	var logger kitlog.Logger
+	logger = kitlog.NewJSONLogger(os.Stdout)
+	logger = kitlog.With(logger, "ts", kitlog.DefaultTimestampUTC)
+	logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
+
+	client := NewWalletClientImpl(logger)
+	rsp, err := client.ClientStream(context.TODO(), &ClientStreamRequest{
+		Stroke: 0,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	log.Printf("rsp: %v", rsp)
+}
+func TestWallet_ServerStream(t *testing.T) {
+
+	var logger kitlog.Logger
+	logger = kitlog.NewJSONLogger(os.Stdout)
+	logger = kitlog.With(logger, "ts", kitlog.DefaultTimestampUTC)
+	logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
+
+	client := NewWalletClientImpl(logger)
+	rsp, err := client.ServerStream(context.TODO(), &ServerStreamRequest{
+		Count: 0,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	log.Printf("rsp: %v", rsp)
+}
+func TestWallet_BidiStream(t *testing.T) {
+
+	var logger kitlog.Logger
+	logger = kitlog.NewJSONLogger(os.Stdout)
+	logger = kitlog.With(logger, "ts", kitlog.DefaultTimestampUTC)
+	logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
+
+	client := NewWalletClientImpl(logger)
+	rsp, err := client.BidiStream(context.TODO(), &BidiStreamRequest{
+		Stroke: 0,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	log.Printf("rsp: %v", rsp)
+}
