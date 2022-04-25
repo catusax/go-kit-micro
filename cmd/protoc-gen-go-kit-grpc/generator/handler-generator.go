@@ -64,5 +64,8 @@ func serverSignature(g *protogen.GeneratedFile, method *protogen.Method) string 
 	if method.Desc.IsStreamingClient() || method.Desc.IsStreamingServer() {
 		reqArgs = append(reqArgs, "stream pb."+method.Parent.GoName+"_"+method.GoName+"Server")
 	}
-	return method.GoName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
+
+	prefix := "(e *" + method.Parent.GoName + "Handler)" + method.GoName
+
+	return prefix + "(" + strings.Join(reqArgs, ", ") + ") " + ret
 }

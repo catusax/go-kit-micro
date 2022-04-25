@@ -16,23 +16,23 @@ type WalletHandler struct {
 // adasda
 // frtgrt
 // asdad
-func Insert(ctx context.Context, req *pb.InsertRequest) (*pb.InsertResponse, error) {
+func (e *WalletHandler) Insert(ctx context.Context, req *pb.InsertRequest) (*pb.InsertResponse, error) {
 	//TODO:implement
 	return nil, nil
 }
-func Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
+func (e *WalletHandler) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
 	//TODO:implement
 	return nil, nil
 }
-func ClientStream(stream pb.Wallet_ClientStreamServer) error {
+func (e *WalletHandler) ClientStream(stream pb.Wallet_ClientStreamServer) error {
 	//TODO:implement
 	return nil
 }
-func ServerStream(req *pb.ServerStreamRequest, stream pb.Wallet_ServerStreamServer) error {
+func (e *WalletHandler) ServerStream(req *pb.ServerStreamRequest, stream pb.Wallet_ServerStreamServer) error {
 	//TODO:implement
 	return nil
 }
-func BidiStream(stream pb.Wallet_BidiStreamServer) error {
+func (e *WalletHandler) BidiStream(stream pb.Wallet_BidiStreamServer) error {
 	//TODO:implement
 	return nil
 }

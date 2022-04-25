@@ -73,7 +73,7 @@ func main() {
 		// Register handler
 		srv := NewRpcServer(logger)
 
-		pb.Register{{title .Service}}Server(srv, new(handler.{{title .Service}}))
+		pb.Register{{title .Service}}Server(srv, new(handler.{{title .Service}}Handler))
 		registrar.Register()
 
 		syslog.Println("serving")
